@@ -37,7 +37,6 @@ export const createUrqlClient = (ssrExchange: any) => ({
                         if (result.login.errors) {
                            return query
                         } else {
-                           console.log('success mequery mutaion')
                            return {
                               me: result.login.user,
                            }
