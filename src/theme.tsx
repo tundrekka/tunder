@@ -11,6 +11,13 @@ const breakpoints = createBreakpoints({
 })
 
 const theme = extendTheme({
+  styles: {
+    global: {
+      "body, html": {
+        color: 'whitesmoke'
+      }
+    }
+  },
   colors: {
     black: '#16161D',
   },
@@ -18,7 +25,7 @@ const theme = extendTheme({
   breakpoints,
   icons: {
     blue: 'blue'
-  },
+  }
 })
 
 export default theme
