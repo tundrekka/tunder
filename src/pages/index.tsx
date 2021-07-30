@@ -4,7 +4,11 @@ import { withUrqlClient } from "next-urql"
 import { createUrqlClient } from "utils/createUrqlClient"
 
 const Index = () => {
-  const [{data}] = usePostsQuery()
+  const [{data}] = usePostsQuery({
+    variables: {
+      limit: 3
+    }
+  })
   return (
     <div>
       <NavBar />

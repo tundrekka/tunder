@@ -5,16 +5,15 @@ import { isServer } from 'utils/isServer'
 interface NavBarProps {}
 
 export const NavBar: React.FC<NavBarProps> = ({}) => {
-   const [{fetching: logoutFetching}, logout] = useLogoutMutation()
+   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
    const [{ data, fetching }] = useMeQuery({
-      pause: isServer()
+      pause: isServer(),
    })
 
    let body = null
 
    if (fetching) {
-   } 
-   else if (!data?.me) {
+   } else if (!data?.me) {
       body = (
          <>
             <NextLink href="/">
@@ -28,22 +27,31 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
             </NextLink>
          </>
       )
-   }
-   else {
+   } else {
       body = (
          <Flex>
-            <Box mr={2} as="p" >{data.me.username}</Box>
-            <Button 
-            onClick={() => {
-               logout()
-            }}
-            isLoading={logoutFetching}
-            variant="link">Logout</Button>
+            <Box mr={2} as="p">
+               {data.me.username}
+            </Box>
+            <Button
+               onClick={() => {
+                  logout()
+               }}
+               isLoading={logoutFetching}
+               variant="link"
+            >
+               Logout
+            </Button>
          </Flex>
       )
    }
 
    return (
-      <Box bg="tomato" p={4}>{body}</Box>
+      <Box bg="tomato" p={4}>
+         <div>{body}</div>
+         <NextLink href="/create-post">
+            <Link>Create P</Link>
+         </NextLink>
+      </Box>
    )
 }
