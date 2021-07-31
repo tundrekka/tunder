@@ -33,7 +33,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
             <Box mr={2} as="p">
                {data.me.username}
             </Box>
+            <NextLink href="/create-post">
+               <Link>Create P</Link>
+            </NextLink>
             <Button
+               ml="auto"
                onClick={() => {
                   logout()
                }}
@@ -49,9 +53,6 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
    return (
       <Box bg="tomato" p={4}>
          <div>{body}</div>
-         <NextLink href="/create-post">
-            <Link>Create P</Link>
-         </NextLink>
       </Box>
    )
 }
