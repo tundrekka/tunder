@@ -1,14 +1,12 @@
 import NextLink from 'next/link'
 import { Box, Button, Flex, Link } from '@chakra-ui/react'
 import { useLogoutMutation, useMeQuery } from 'generated/graphql'
-import { isServer } from 'utils/isServer'
+// import { isServer } from 'utils/isServer'
 interface NavBarProps {}
 
 export const NavBar: React.FC<NavBarProps> = ({}) => {
    const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
-   const [{ data, fetching }] = useMeQuery({
-      pause: isServer(),
-   })
+   const [{ data, fetching }] = useMeQuery()
 
    let body = null
 
@@ -30,7 +28,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
    } else {
       body = (
          <Flex>
-            <Box mr={2} as="p">
+            <Box mr={2} as="p" fontWeight="bold">
                {data.me.username}
             </Box>
             <NextLink href="/create-post">
