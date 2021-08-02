@@ -1,4 +1,4 @@
-import { cacheExchange, Resolver } from '@urql/exchange-graphcache'
+import { Cache, cacheExchange, Resolver } from '@urql/exchange-graphcache'
 import {
    LogoutMutation,
    MeQuery,
@@ -64,6 +64,16 @@ const errorExchange: Exchange =
          })
       )
    }
+  
+const invalidateAllPosts = (cache: Cache) => {
+   const allFields = cache.inspectFields('Query')
+   const fieldInfos = allFields.filter(
+      (info) => info.fieldName === 'posts'
+   )
+   fieldInfos.forEach((fi) => {
+      cache.invalidate('Query', 'posts', fi.arguments)
+   })
+}   
 
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
    let cookie = ''
@@ -71,7 +81,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
       cookie = ctx?.req?.headers.cookie
    }
    return {
-      url: 'http://localhost:4001/graphql',
+      url: process.env.NEXT_PUBLIC_API_URL as string,
       fetchOptions: {
          credentials: 'include' as const,
          headers: cookie
@@ -129,17 +139,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                      }
                   },
                   createPost: (_result, args, cache, info) => {
-                     const allFields = cache.inspectFields('Query')
-                     const fieldInfos = allFields.filter(
-                        (info) => info.fieldName === 'posts'
-                     )
-                     fieldInfos.forEach((fi) => {
-                        cache.invalidate('Query', 'posts', fi.arguments)
-                     })
-                     cache.invalidate('Query', 'posts', {
-                        limit: 12,
-                        cursor: null,
-                     })
+                    invalidateAllPosts(cache)
                   },
                   logout: (_result, args, cache, info) => {
                      betterUpdateQuery<LogoutMutation, MeQuery>(
@@ -165,6 +165,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                            }
                         }
                      )
+                     invalidateAllPosts(cache)
                   },
 
                   register: (_result, args, cache, info) => {

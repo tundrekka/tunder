@@ -45,13 +45,8 @@ const EditPost: React.FC<EditPostProps> = ({}) => {
          <Formik
             initialValues={{ title: data.post.title, text: data.post.text }}
             onSubmit={async (values) => {
-               // const { error } = await createPost({input: values})
-               // if(!error) {
-               //    console.log('no errors good')
-               //    router.push('/')
-               // }
                await updatePost({id: intId, ...values})
-               Router.push('/')
+               Router.back()
             }}
          >
             {({ isSubmitting }) => (
