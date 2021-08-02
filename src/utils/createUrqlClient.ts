@@ -6,6 +6,7 @@ import {
    LoginMutation,
    RegisterMutation,
    VoteMutationVariables,
+   DeletePostMutationVariables,
 } from 'generated/graphql'
 import { dedupExchange, fetchExchange, gql, stringifyVariables } from 'urql'
 import { betterUpdateQuery } from './betterUpdateQuery'
@@ -66,17 +67,18 @@ const errorExchange: Exchange =
 
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
    let cookie = ''
-   if(isServer()) {
+   if (isServer()) {
       cookie = ctx?.req?.headers.cookie
    }
-   console.log(cookie)
    return {
       url: 'http://localhost:4001/graphql',
       fetchOptions: {
          credentials: 'include' as const,
-         headers: cookie ? {
-            cookie
-         } : undefined
+         headers: cookie
+            ? {
+                 cookie,
+              }
+            : undefined,
       },
       exchanges: [
          dedupExchange,
@@ -91,6 +93,12 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
             },
             updates: {
                Mutation: {
+                  deletePost: (_result, args, cache, info) => {
+                     cache.invalidate({
+                        __typename: 'Post',
+                        id: (args as DeletePostMutationVariables).id,
+                     })
+                  },
                   vote: (_result, args, cache, info) => {
                      const { postId, value } = args as VoteMutationVariables
                      const data = cache.readFragment(
@@ -104,10 +112,11 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                         { id: postId }
                      )
                      if (data) {
-                        if(data.voteStatus === args.value) {
-                           return;
+                        if (data.voteStatus === args.value) {
+                           return
                         }
-                        const newPoints = data.points + ((!data.voteStatus ? 1 : 2) * value)
+                        const newPoints =
+                           data.points + (!data.voteStatus ? 1 : 2) * value
                         cache.writeFragment(
                            gql`
                               fragment __ on Post {

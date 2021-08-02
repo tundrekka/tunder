@@ -14,9 +14,6 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
    } else if (!data?.me) {
       body = (
          <>
-            <NextLink href="/">
-               <Link mr={2}>Home</Link>
-            </NextLink>
             <NextLink href="/login">
                <Link mr={2}>Login</Link>
             </NextLink>
@@ -50,6 +47,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 
    return (
       <Box bg="tomato" p={4}>
+         <div>
+            <NextLink href="/">
+               <Link mr={2}>Home</Link>
+            </NextLink>
+         </div>
          <div>{body}</div>
       </Box>
    )
