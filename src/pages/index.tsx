@@ -10,7 +10,6 @@ import {
 import { Layout } from 'components/Layout'
 import { UpdootSection } from 'components/UpdootSection'
 import {
-   useMeQuery,
    usePostsQuery,
 } from 'generated/graphql'
 import { withUrqlClient } from 'next-urql'
@@ -23,10 +22,16 @@ const Index = () => {
       limit: 12,
       cursor: null as null | string,
    })
-   const [{ data, fetching }] = usePostsQuery({
+   const [{ data, error, fetching }] = usePostsQuery({
       variables,
    })
 
+   if(error) {
+      return (<div>
+         <p>{error}</p>
+         <Heading>{error.message}</Heading>
+      </div>)
+   }
 
    if (!fetching && !data) {
       return <p>Internal Error, try reloading</p>
